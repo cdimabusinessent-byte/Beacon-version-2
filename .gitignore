@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.env
+.env.localtest
+.cloudrun.rendered*.yaml
+trading_bot.db
+pytest-cache-files-*/

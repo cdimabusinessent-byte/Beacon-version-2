@@ -1,0 +1,67 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: beacon-api
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/cloudsql-instances: PROJECT_ID:REGION:CLOUDSQL_INSTANCE
+    spec:
+      serviceAccountName: beacon-api@PROJECT_ID.iam.gserviceaccount.com
+      containerConcurrency: 20
+      timeoutSeconds: 300
+      containers:
+        - image: REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/beacon:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENVIRONMENT
+              value: staging
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: beacon-database-url
+                  key: latest
+            - name: DATABASE_RUN_MIGRATIONS_ON_STARTUP
+              value: "true"
+            - name: CONTROL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: beacon-control-api-key
+                  key: latest
+            - name: MT5_PROFILE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: beacon-mt5-profile-encryption-key
+                  key: latest
+            - name: STARTUP_SELF_CHECK_REQUIRED
+              value: "false"
+            - name: TRUSTED_HOSTS
+              value: your-api-domain.run.app,your-api-domain.example.com
+            - name: CORS_ALLOWED_ORIGINS
+              value: https://your-frontend.example.com
+            - name: HTTPS_REDIRECT_ENABLED
+              value: "false"
+            - name: MARKET_DATA_PROVIDER
+              value: auto
+            - name: EXECUTION_PROVIDER
+              value: MT5
+            - name: MT5_EXECUTION_MODE
+              value: queue
+            - name: MT5_TERMINAL_PATH
+              value: ""
+            - name: LIVE_TRADING_ARMED
+              value: "false"
+            - name: AUTO_TRADING_ENABLED
+              value: "false"
+            - name: RECONCILIATION_ENABLED
+              value: "false"
+            - name: PRO_ANALYSIS_EXECUTION_ENABLED
+              value: "false"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi

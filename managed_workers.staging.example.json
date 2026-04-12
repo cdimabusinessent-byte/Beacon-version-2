@@ -1,0 +1,16 @@
+[
+  {
+    "owner_id": "trader-alpha",
+    "worker_key": "worker-trader-alpha-1",
+    "profile_id": 1,
+    "label": "Trader Alpha Windows Worker",
+    "terminal_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe"
+  },
+  {
+    "owner_id": "trader-beta",
+    "worker_key": "worker-trader-beta-1",
+    "profile_id": 2,
+    "label": "Trader Beta Windows Worker",
+    "terminal_path": "C:\\Program Files\\MetaTrader 5\\terminal64.exe"
+  }
+]

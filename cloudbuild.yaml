@@ -1,0 +1,42 @@
+substitutions:
+  _REGION: us-central1
+  _SERVICE: beacon-api
+  _REPOSITORY: beacon
+  _IMAGE_NAME: beacon
+  _MANIFEST: cloudrun.service.yaml
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:$COMMIT_SHA
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:latest
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:$COMMIT_SHA
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:latest
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        IMAGE_URI="${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:$COMMIT_SHA"
+        sed \
+          -e "s|REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/beacon:latest|${IMAGE_URI}|g" \
+          -e "s|name: beacon-api|name: ${_SERVICE}|g" \
+          "${_MANIFEST}" > /workspace/cloudrun.rendered.yaml
+        gcloud run services replace /workspace/cloudrun.rendered.yaml --region "${_REGION}"
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:$COMMIT_SHA
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_NAME}:latest

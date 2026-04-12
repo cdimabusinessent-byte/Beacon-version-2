@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ settings.app_name }}</title>
+    <style>
+        :root {
+            --bg: #07111f;
+            --panel: rgba(11, 25, 43, 0.88);
+            --panel-border: rgba(148, 163, 184, 0.22);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --danger: #f97316;
+            --warn: #facc15;
+            --shadow: 0 20px 60px rgba(2, 6, 23, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(34, 197, 94, 0.25), transparent 32%),
+                radial-gradient(circle at top right, rgba(249, 115, 22, 0.18), transparent 25%),
+                linear-gradient(135deg, #020617 0%, #0f172a 55%, #111827 100%);
+            padding: 32px 20px 60px;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            letter-spacing: 0.02em;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 720px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
+        }
+
+        .metric {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .label {
+            color: var(--muted);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .accent {
+            color: var(--accent);
+        }
+
+        .danger {
+            color: var(--danger);
+        }
+
+        .warn {
+            color: var(--warn);
+        }
+
+        .status-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .pill {
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--panel-border);
+            background: rgba(15, 23, 42, 0.72);
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        button {
+            border: 0;
+            border-radius: 999px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: #04130a;
+            background: linear-gradient(135deg, #22c55e, #bef264);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.24);
+        }
+
+        button[disabled] {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .symbol-toggle-btn {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 999px;
+            border: 1px solid var(--panel-border);
+            color: var(--text);
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: none;
+        }
+
+        .symbol-toggle-btn.is-on {
+            color: #04130a;
+            background: linear-gradient(135deg, #22c55e, #bef264);
+            border-color: rgba(34, 197, 94, 0.45);
+        }
+
+        .symbol-toggle-btn.is-off {
+            color: #fee2e2;
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            border-color: rgba(248, 113, 113, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        .footer-note {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .strategy-stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .strategy-line {
+            padding: 10px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.42);
+            line-height: 1.45;
+        }
+
+        .strategy-line strong {
+            color: var(--text);
+        }
+
+        .dropdown-shell {
+            display: grid;
+            gap: 16px;
+        }
+
+        .symbol-picker {
+            width: 100%;
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .symbol-detail-grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+
+        .detail-box {
+            padding: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.42);
+        }
+
+        .detail-box .label {
+            font-size: 0.8rem;
+        }
+
+        .detail-box .metric {
+            font-size: 1.35rem;
+            margin-top: 8px;
+        }
+
+        .symbol-panel {
+            display: none;
+            gap: 16px;
+        }
+
+        .symbol-panel.is-active {
+            display: grid;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--text);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            font-size: 0.98rem;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .button-secondary {
+            color: var(--text);
+            background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+            box-shadow: 0 10px 30px rgba(29, 78, 216, 0.24);
+        }
+
+        .button-inline {
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            box-shadow: none;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 20px 14px 40px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <h1>{{ settings.app_name }}</h1>
+            {% if snapshot %}
+                <p>
+                    Adaptive 10-strategy engine on {{ snapshot.signal_symbol }} with {{ snapshot.market_data_provider|upper }} market data,
+                    explicit signal and execution symbols, per-trade strategy attribution, and guarded write controls.
+                </p>
+            {% else %}
+                <p>
+                    The dashboard loaded, but live market data could not be fetched yet. You can still see the bot status
+                    below and fix the connection settings without the whole app crashing.
+                </p>
+            {% endif %}
+        </section>
+
+        {% if snapshot_error %}
+        <section class="card" style="margin-bottom: 18px; border-color: rgba(249, 115, 22, 0.5);">
+            <div class="label">Market Data Error</div>
+            <div class="footer-note danger">{{ snapshot_error }}</div>
+            <div class="footer-note">Check your internet connection, `.env` settings, and whether the selected market-data API is reachable from your network.</div>
+        </section>
+        {% endif %}
+
+        {% if snapshot %}
+        <section class="grid">
+            <article class="card">
+                <div class="label">Market Price</div>
+                <div class="metric">${{ "%.2f"|format(snapshot.latest_price) }}</div>
+                <div class="footer-note">Latest candle close on {{ snapshot.market_data_symbol }}</div>
+            </article>
+            <article class="card">
+                <div class="label">RSI</div>
+                <div class="metric {% if snapshot.rsi >= settings.rsi_sell_threshold %}danger{% elif snapshot.rsi <= settings.rsi_buy_threshold %}accent{% else %}warn{% endif %}">
+                    {{ "%.2f"|format(snapshot.rsi) }}
+                </div>
+                <div class="footer-note">Buy under {{ settings.rsi_buy_threshold }} / Sell over {{ settings.rsi_sell_threshold }}</div>
+            </article>
+            <article class="card">
+                <div class="label">Suggested Action</div>
+                <div class="metric">{{ snapshot.suggested_action }}</div>
+                <div class="footer-note">Current net position: {{ "%.6f"|format(snapshot.position_quantity) }}</div>
+            </article>
+            <article class="card">
+                <div class="label">Confidence / Regime</div>
+                <div class="metric">{{ "%.2f"|format(snapshot.confidence * 100) }}%</div>
+                <div class="footer-note">{{ snapshot.regime|replace('-', ' ')|title }}</div>
+            </article>
+            <article class="card">
+                <div class="label">Market Data</div>
+                <div class="metric">{{ snapshot.market_data_provider|upper }}</div>
+                <div class="footer-note">Feed symbol: {{ snapshot.market_data_symbol }}</div>
+            </article>
+            <article class="card">
+                <div class="label">Bot Mode</div>
+                <div id="bot-mode" class="metric {% if bot_state.mode.startswith('LIVE') %}danger{% else %}accent{% endif %}">{{ bot_state.mode }}</div>
+                <div class="footer-note">Signal: {{ snapshot.signal_symbol }} | Execution: {{ snapshot.execution_symbol }}</div>
+            </article>
+            {% if settings.effective_execution_provider == 'mt5' %}
+            <article class="card">
+                <div class="label">MT5 Symbols</div>
+                <div class="metric">{{ settings.mt5_symbol }}</div>
+                <div class="footer-note">Configured list: {{ settings.effective_mt5_symbols|join(', ') }}</div>
+            </article>
+            {% endif %}
+        </section>
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Current Selected Strategies</div>
+            <div class="status-row">
+                {% for strategy in snapshot.strategy_names %}
+                <span class="pill accent">{{ strategy }}</span>
+                {% else %}
+                <span class="pill">No active strategies on this snapshot</span>
+                {% endfor %}
+            </div>
+            <div class="footer-note">
+                Stop Loss: {% if snapshot.stop_loss is not none %}{{ "%.5f"|format(snapshot.stop_loss) }}{% else %}--{% endif %}
+                &nbsp;|&nbsp;
+                Take Profit: {% if snapshot.take_profit is not none %}{{ "%.5f"|format(snapshot.take_profit) }}{% else %}--{% endif %}
+            </div>
+            {% if snapshot.atr_recovery_profile and snapshot.atr_recovery_profile.active %}
+            <div class="footer-note" style="margin-top: 10px;">
+                ATR overlay: {% if snapshot.atr_recovery_profile.execution_overlay_active %}<span class="accent">ON</span>{% else %}<span class="warn">IDLE</span>{% endif %}
+                | ATR: {% if snapshot.atr_value is not none %}{{ "%.5f"|format(snapshot.atr_value) }}{% else %}--{% endif %}
+                | Hedge trigger plan: {% if snapshot.atr_recovery_profile.hedge_trigger is not none %}{{ "%.5f"|format(snapshot.atr_recovery_profile.hedge_trigger) }}{% else %}--{% endif %}
+                | Source remains weighted multi-engine
+            </div>
+            {% endif %}
+            {% if snapshot.strategy_details %}
+            <div class="strategy-stack" style="margin-top: 16px;">
+                {% for strategy in snapshot.strategy_details %}
+                <div class="strategy-line">
+                    <strong>{{ strategy.name }}</strong>
+                    <span class="{% if strategy.action == 'BUY' %}accent{% elif strategy.action == 'SELL' %}danger{% else %}warn{% endif %}">
+                        {{ strategy.action }}
+                    </span>
+                    | Confidence: {{ "%.1f"|format(strategy.confidence * 100) }}%
+                    | SL: {% if strategy.stop_loss is not none %}{{ "%.5f"|format(strategy.stop_loss) }}{% else %}--{% endif %}
+                    | TP: {% if strategy.take_profit is not none %}{{ "%.5f"|format(strategy.take_profit) }}{% else %}--{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Configured Strategy Stack</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Strategy</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in strategy_catalog %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td class="{% if item.enabled %}accent{% else %}danger{% endif %}">{% if item.enabled %}ENABLED{% else %}DISABLED{% endif %}</td>
+                            <td>{{ item.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-note">These strategies are explicitly configured in the v2 environment and evaluated by the engine, not inferred by the dashboard.</div>
+        </section>
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Controls</div>
+            <div class="status-row">
+                <span class="pill">Auto trading: <span id="auto-trading-status">{{ "ON" if bot_state.auto_trading_enabled else "OFF" }}</span></span>
+                <span class="pill">Last run: <span id="last-run">{{ bot_state.last_run or "Never" }}</span></span>
+                <span class="pill next-check">Next check: <span id="next-check-label">Pending first run</span></span>
+                <span class="pill">Last error: <span id="last-error">{{ bot_state.last_error or "None" }}</span></span>
+                {% if settings.effective_execution_provider == 'mt5' %}
+                <span class="pill">MT5 active positions: <span id="mt5-active-positions">{% if mt5_active_positions is not none %}{{ mt5_active_positions }}{% else %}--{% endif %}</span></span>
+                <span class="pill">MT5 cap: <span id="mt5-active-positions-cap">{{ mt5_active_positions_cap }}</span></span>
+                {% endif %}
+                    <button id="run-now" class="button-inline">Run Strategy Now</button>
+                    <button id="start-bot" class="button-inline">Turn On Bot</button>
+                    <button id="stop-bot" class="button-inline button-secondary">Turn Off Bot</button>
+            </div>
+            <div style="margin-top: 18px; max-width: 420px;">
+                <input id="control-api-key" class="text-input" type="password" placeholder="Optional Control API Key for protected actions" autocomplete="off" />
+            </div>
+            <div id="run-result" class="footer-note"></div>
+        </section>
+
+        {% if startup_execution_review and startup_execution_review.requires_confirmation %}
+        <section class="card" style="margin-bottom: 18px; border-color: rgba(251, 191, 36, 0.45);">
+            <div class="label">Startup Execution Review</div>
+            <div class="footer-note warn">{{ startup_execution_review.message }}</div>
+            <div class="footer-note" style="margin-top: 10px;">
+                Review generated: <strong>{{ startup_execution_review.generated_at or '--' }}</strong>
+                | Current actionable analyses: <strong>{{ startup_execution_review.actionable_count }}</strong>
+                | Carried queued jobs: <strong>{{ startup_execution_review.queued_job_count }}</strong>
+            </div>
+            <div class="button-row" style="margin-top: 16px;">
+                <button id="startup-review-approve">Allow Execution</button>
+                <button id="startup-review-cancel" class="button-secondary">Cancel Pending Execution</button>
+                <span class="footer-note">"Current" means this boot's live analysis. "Past" means previously queued work from an older run.</span>
+            </div>
+            <div id="startup-review-result" class="footer-note"></div>
+            <div class="table-wrap" style="margin-top: 16px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Pair</th>
+                            <th>Action</th>
+                            <th>Confidence</th>
+                            <th>Price</th>
+                            <th>SL / TP</th>
+                            <th>Analysis Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in startup_execution_review["items"] %}
+                        <tr>
+                            <td>{% if item.source == 'queued_job' %}<span class="warn">PAST</span>{% else %}<span class="accent">CURRENT</span>{% endif %}</td>
+                            <td>{{ item.execution_symbol or item.symbol or '--' }}</td>
+                            <td class="{% if item.action == 'BUY' %}accent{% elif item.action == 'SELL' %}danger{% else %}warn{% endif %}">{{ item.action or '--' }}</td>
+                            <td>{% if item.confidence is not none %}{{ "%.1f"|format(item.confidence * 100) }}%{% else %}--{% endif %}</td>
+                            <td>{% if item.latest_price is not none %}{{ "%.5f"|format(item.latest_price) }}{% else %}--{% endif %}</td>
+                            <td>
+                                SL {% if item.stop_loss is not none %}{{ "%.5f"|format(item.stop_loss) }}{% else %}--{% endif %}
+                                <div class="footer-note" style="margin-top: 6px;">TP {% if item.take_profit is not none %}{{ "%.5f"|format(item.take_profit) }}{% else %}--{% endif %}</div>
+                            </td>
+                            <td>{{ item.analysis_generated_at or '--' }}</td>
+                            <td class="{% if item.execution_block %}danger{% else %}accent{% endif %}">{{ item.execution_block or item.message or 'Ready for approval' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">MT5 Profile Intake</div>
+            {% if not mt5_profile_encryption_ready %}
+            <div class="footer-note danger">Set <strong>MT5_PROFILE_ENCRYPTION_KEY</strong> in the server environment before saving user MT5 passwords. Until then, test connections will work, but profiles cannot be stored.</div>
+            {% else %}
+            <div class="footer-note accent">Encrypted MT5 profile storage is ready for Android and future multi-user onboarding flows.</div>
+            {% endif %}
+            <div class="symbol-detail-grid" style="margin-top: 16px;">
+                <div class="detail-box">
+                    <div class="label">Owner ID</div>
+                    <input id="mt5-profile-owner" class="text-input" type="text" value="{{ dashboard_owner_id }}" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Profile Label</div>
+                    <input id="mt5-profile-label" class="text-input" type="text" placeholder="Primary FX account" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">MT5 Login</div>
+                    <input id="mt5-profile-login" class="text-input" type="number" min="1" step="1" placeholder="12345678" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">MT5 Password</div>
+                    <input id="mt5-profile-password" class="text-input" type="password" placeholder="Password" autocomplete="off" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Broker Server</div>
+                    <input id="mt5-profile-server" class="text-input" type="text" placeholder="Broker-MT5Live" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Terminal Path</div>
+                    <input id="mt5-profile-terminal" class="text-input" type="text" placeholder="Optional Windows terminal64.exe path" value="{{ settings.mt5_terminal_path }}" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Primary Broker Symbol</div>
+                    <input id="mt5-profile-primary-symbol" class="text-input" type="text" placeholder="GBPUSDm or GBPUSD+" value="{{ settings.mt5_symbol }}" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Symbols</div>
+                    <input id="mt5-profile-symbols" class="text-input" type="text" placeholder="EURUSDm,GBPUSDm,XAUUSDz" value="{{ settings.effective_mt5_symbols|join(',') }}" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Volume Lots</div>
+                    <input id="mt5-profile-volume" class="text-input" type="number" min="0.01" step="0.01" value="{{ settings.mt5_volume_lots }}" />
+                </div>
+            </div>
+            <div class="button-row" style="margin-top: 18px;">
+                <button id="mt5-profile-save">Save Profile</button>
+                <button id="mt5-profile-test" class="button-secondary">Test Connection</button>
+                <button id="mt5-profile-preview" class="button-secondary">Preview Snapshot</button>
+                <span class="footer-note">Enter the exact broker symbol name, including any suffix like m, z, or +. Beacon uses the primary broker symbol for MT5 market data and account display.</span>
+            </div>
+            <div id="mt5-profile-result" class="footer-note"></div>
+            <div class="footer-note">
+                Viewing owner scope: <span class="accent">{{ dashboard_owner_id }}</span>
+                {% if dashboard_is_runtime_owner %}
+                | This owner is attached to the process runtime.
+                {% else %}
+                | This owner is previewed safely without changing the API process runtime.
+                {% endif %}
+            </div>
+            <div id="mt5-profile-preview-panel" class="detail-box" style="margin-top: 16px; display: none;">
+                <div class="label">MT5 Snapshot Preview</div>
+                <div id="mt5-profile-preview-output" class="footer-note" style="margin-top: 12px; white-space: pre-wrap;"></div>
+            </div>
+            <div class="table-wrap" style="margin-top: 16px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <th>Label</th>
+                            <th>Login</th>
+                            <th>Server</th>
+                            <th>Primary Symbol</th>
+                            <th>Symbols</th>
+                            <th>Password</th>
+                            <th>Status</th>
+                            <th>Control</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mt5-profile-body">
+                        {% for item in mt5_profiles %}
+                        <tr>
+                            <td>{{ item.owner_id }}</td>
+                            <td>{{ item.label }}</td>
+                            <td>{{ item.login }}</td>
+                            <td>{{ item.server }}</td>
+                            <td>{{ item.primary_symbol or '--' }}</td>
+                            <td>{{ item.symbols|join(', ') if item.symbols else '--' }}</td>
+                            <td>{{ item.password_mask if item.password_configured else '--' }}</td>
+                            <td class="{% if item.is_active %}accent{% elif item.last_connection_ok is sameas false %}danger{% else %}warn{% endif %}">
+                                {% if item.is_active %}ACTIVE{% elif item.last_connection_ok is sameas false %}FAILED{% else %}STORED{% endif %}
+                            </td>
+                            <td>
+                                <button class="symbol-toggle-btn button-secondary" data-profile-test="{{ item.id }}" data-owner-id="{{ item.owner_id }}">Test</button>
+                                <button class="symbol-toggle-btn button-secondary" data-profile-preview="{{ item.id }}" data-owner-id="{{ item.owner_id }}">Preview</button>
+                                <button class="symbol-toggle-btn {% if item.is_active %}is-on{% else %}is-off{% endif %}" data-profile-activate="{{ item.id }}" data-owner-id="{{ item.owner_id }}">
+                                    {% if item.is_active %}Active{% else %}Set Active{% endif %}
+                                </button>
+                                <button class="symbol-toggle-btn button-secondary" data-profile-delete="{{ item.id }}" data-owner-id="{{ item.owner_id }}">Delete</button>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9">No MT5 profiles stored yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Managed MT5 Workers</div>
+            <div class="symbol-detail-grid" style="margin-top: 16px;">
+                <div class="detail-box">
+                    <div class="label">Worker Key</div>
+                    <input id="mt5-worker-key" class="text-input" type="text" placeholder="worker-owner-a" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Bind Profile ID</div>
+                    <input id="mt5-worker-profile-id" class="text-input" type="number" min="1" step="1" placeholder="Optional profile id" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Worker Label</div>
+                    <input id="mt5-worker-label" class="text-input" type="text" placeholder="London desktop worker" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Terminal Path</div>
+                    <input id="mt5-worker-terminal" class="text-input" type="text" placeholder="Optional Windows terminal64.exe path" value="{{ settings.mt5_terminal_path }}" />
+                </div>
+            </div>
+            <div class="button-row" style="margin-top: 18px;">
+                <button id="mt5-worker-provision">Provision Worker</button>
+                <button id="mt5-worker-assign" class="button-secondary">Assign Worker</button>
+                <button id="mt5-worker-refresh" class="button-secondary">Refresh Workers</button>
+                <span class="footer-note">Provision a dedicated worker key for an owner, then bind it to a profile so queued MT5 jobs stay isolated.</span>
+            </div>
+            <div id="mt5-worker-result" class="footer-note"></div>
+            <div class="table-wrap" style="margin-top: 16px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Worker Key</th>
+                            <th>Owner</th>
+                            <th>Profile</th>
+                            <th>Status</th>
+                            <th>Heartbeat</th>
+                            <th>Last Error</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mt5-worker-body">
+                        {% for item in mt5_workers %}
+                        <tr>
+                            <td>{{ item.worker_key }}</td>
+                            <td>{{ item.owner_id }}</td>
+                            <td>{% if item.profile_id %}{{ item.profile_id }}{% if item.profile_label %} · {{ item.profile_label }}{% endif %}{% else %}--{% endif %}</td>
+                            <td class="{% if item.status == 'ONLINE' %}accent{% elif item.status == 'ERROR' %}danger{% else %}warn{% endif %}">{{ item.status }}</td>
+                            <td>{{ item.heartbeat_at or '--' }}</td>
+                            <td class="{% if item.last_error %}danger{% else %}accent{% endif %}">{{ item.last_error or '--' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">No managed workers provisioned for this owner yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Latest Execution Errors</div>
+            {% set cycle_errors = bot_state.last_result.errors if bot_state.last_result and bot_state.last_result.errors else {} %}
+            {% if cycle_errors %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Error Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for symbol, detail in cycle_errors.items() %}
+                        <tr>
+                            <td>{{ symbol }}</td>
+                            <td class="danger">{{ detail }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-note">Errors shown here are from the most recent strategy cycle and clear when the next run succeeds.</div>
+            {% else %}
+            <div class="footer-note accent">No symbol-level execution errors in the latest cycle.</div>
+            {% endif %}
+        </section>
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Professional FX Analysis</div>
+            <div class="symbol-detail-grid">
+                <div class="detail-box">
+                    <div class="label">Pair</div>
+                    <select id="analysis-symbol" class="symbol-picker" aria-label="Select analysis symbol">
+                        {% for symbol in dashboard_mt5_symbols %}
+                        <option value="{{ symbol }}" {% if symbol == dashboard_mt5_primary_symbol %}selected{% endif %}>{{ symbol }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Account Size</div>
+                    <input id="analysis-account-size" type="number" min="0" step="0.01" placeholder="Blank = live MT5 equity" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.04); color: #f3f4f6; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;" />
+                </div>
+                <div class="detail-box">
+                    <div class="label">Risk Tolerance</div>
+                    <select id="analysis-risk" class="symbol-picker" aria-label="Select risk tolerance">
+                        <option value="LOW">LOW</option>
+                        <option value="MEDIUM" selected>MEDIUM</option>
+                        <option value="HIGH">HIGH</option>
+                    </select>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Trading Style</div>
+                    <select id="analysis-style" class="symbol-picker" aria-label="Select trading style">
+                        <option value="SCALPING">SCALPING</option>
+                        <option value="DAY TRADING" selected>DAY TRADING</option>
+                        <option value="SWING">SWING</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 18px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <button id="run-pro-analysis">Run Pro Analysis</button>
+                <button id="execute-pro-analysis" class="button-secondary">Enable And Execute On MT5</button>
+                <span class="footer-note">Uses the existing MT5 account, symbol list, and strategy stack from this upgraded copy.</span>
+            </div>
+            <pre id="analysis-output" style="white-space: pre-wrap; margin-top: 16px; padding: 16px; border-radius: 14px; background: rgba(10, 15, 26, 0.92); border: 1px solid rgba(255,255,255,0.08); max-height: 520px; overflow: auto;">Select a configured pair and run the institutional analysis.</pre>
+        </section>
+
+        {% if settings.effective_execution_provider == 'mt5' and mt5_symbol_readiness %}
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">MT5 Symbol Execution Readiness</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Ready</th>
+                            <th>Retcode</th>
+                            <th>Comment</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mt5-readiness-body">
+                        {% for item in mt5_symbol_readiness %}
+                        <tr>
+                            <td>{{ item.symbol }}</td>
+                            <td class="{% if item.ready %}accent{% else %}danger{% endif %}">{% if item.ready %}YES{% else %}NO{% endif %}</td>
+                            <td>{% if item.retcode is not none %}{{ item.retcode }}{% else %}--{% endif %}</td>
+                            <td>{{ item.comment or '--' }}</td>
+                            <td class="{% if item.error %}danger{% else %}accent{% endif %}">{{ item.error or '--' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-note">Based on MT5 `order_check` per configured symbol. This does not place live orders.</div>
+        </section>
+        {% endif %}
+
+        {% if settings.effective_execution_provider == 'mt5' and mt5_live_order_toggles %}
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">MT5 Live-Order Pair Toggles</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Status</th>
+                            <th>Control</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mt5-live-order-toggle-body">
+                        {% for item in mt5_live_order_toggles %}
+                        <tr>
+                            <td>{{ item.symbol }}</td>
+                            <td class="{% if item.enabled %}accent{% else %}danger{% endif %}">{% if item.enabled %}ON{% else %}OFF{% endif %}</td>
+                            <td>
+                                <button
+                                    class="symbol-toggle-btn {% if item.enabled %}is-on{% else %}is-off{% endif %}"
+                                    data-toggle-symbol="{{ item.symbol }}"
+                                    data-toggle-enabled="{{ 'true' if item.enabled else 'false' }}"
+                                >
+                                    {% if item.enabled %}Turn OFF{% else %}Turn ON{% endif %}
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-note">When OFF, new BUY entries for that symbol are blocked. SELL exits remain allowed for safety.</div>
+            <div id="mt5-toggle-result" class="footer-note"></div>
+        </section>
+        {% endif %}
+
+        {% if settings.effective_execution_provider == 'mt5' and mt5_atr_recovery_toggles %}
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">MT5 ATR Recovery Pair Toggles</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Status</th>
+                            <th>Control</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mt5-atr-recovery-toggle-body">
+                        {% for item in mt5_atr_recovery_toggles %}
+                        <tr>
+                            <td>{{ item.symbol }}</td>
+                            <td class="{% if item.enabled %}accent{% else %}danger{% endif %}">{% if item.enabled %}ON{% else %}OFF{% endif %}</td>
+                            <td>
+                                <button
+                                    class="symbol-toggle-btn {% if item.enabled %}is-on{% else %}is-off{% endif %}"
+                                    data-atr-toggle-symbol="{{ item.symbol }}"
+                                    data-atr-toggle-enabled="{{ 'true' if item.enabled else 'false' }}"
+                                >
+                                    {% if item.enabled %}Turn OFF{% else %}Turn ON{% endif %}
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-note">When ON, Beacon applies the ATR execution overlay for that MT5 symbol while keeping the weighted multi-engine as the primary directional source.</div>
+            <div id="mt5-atr-recovery-toggle-result" class="footer-note"></div>
+        </section>
+        {% endif %}
+
+        {% if settings.effective_execution_provider == 'mt5' and mt5_trade_cycles %}
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">MT5 ATR Recovery Cycles</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Status</th>
+                            <th>ATR</th>
+                            <th>Entry / Last</th>
+                            <th>SL / TP</th>
+                            <th>Hedge Plan</th>
+                            <th>Opened</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in mt5_trade_cycles %}
+                        <tr>
+                            <td>{{ item.execution_symbol }}</td>
+                            <td class="{% if item.status == 'OPEN' %}accent{% else %}warn{% endif %}">
+                                {{ item.status }}{% if item.atr_recovery_enabled %} / ATR{% endif %}
+                            </td>
+                            <td>
+                                {% if item.atr_value is not none %}{{ "%.5f"|format(item.atr_value) }}{% else %}--{% endif %}
+                                <div class="footer-note" style="margin-top: 6px;">pct {% if item.atr_pct is not none %}{{ "%.4f"|format(item.atr_pct) }}{% else %}--{% endif %}</div>
+                            </td>
+                            <td>
+                                Entry {% if item.entry_price is not none %}{{ "%.5f"|format(item.entry_price) }}{% else %}--{% endif %}
+                                <div class="footer-note" style="margin-top: 6px;">Last {% if item.latest_price is not none %}{{ "%.5f"|format(item.latest_price) }}{% else %}--{% endif %}</div>
+                            </td>
+                            <td>
+                                SL {% if item.stop_loss is not none %}{{ "%.5f"|format(item.stop_loss) }}{% else %}--{% endif %}
+                                <div class="footer-note" style="margin-top: 6px;">TP {% if item.take_profit is not none %}{{ "%.5f"|format(item.take_profit) }}{% else %}--{% endif %}</div>
+                            </td>
+                            <td>
+                                Trigger {% if item.hedge_trigger is not none %}{{ "%.5f"|format(item.hedge_trigger) }}{% else %}--{% endif %}
+                                <div class="footer-note" style="margin-top: 6px;">Reversal {% if item.reversal_confirmation_price is not none %}{{ "%.5f"|format(item.reversal_confirmation_price) }}{% else %}--{% endif %}</div>
+                            </td>
+                            <td>{{ item.opened_at or '--' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-note">These cycle records persist ATR recovery planning for MT5 BUY entries. Hedge execution is still planning-only until a dedicated hedged-book MT5 model is added.</div>
+        </section>
+        {% endif %}
+
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Strategy Execution Schedule</div>
+            <div class="symbol-detail-grid">
+                <div class="detail-box">
+                    <div class="label">Poll Interval</div>
+                    <div class="metric">{{ (settings.poll_interval_seconds / 3600)|round(1) }}h</div>
+                    <div class="footer-note">Bot checks every {{ settings.poll_interval_seconds // 60 }} minutes</div>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Strategy Timeframe</div>
+                    <div class="metric">{{ settings.candle_interval }}</div>
+                    <div class="footer-note">Using 1-hour candlesticks</div>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Data History</div>
+                    <div class="metric">{{ settings.candle_limit }}</div>
+                    <div class="footer-note">~{{ (settings.candle_limit / 24)|round(0)|int }} days of candle data</div>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Strategies Active</div>
+                    <div class="metric">{{ settings.effective_enabled_strategies|length }}</div>
+                    <div class="footer-note">Multi-strategy consensus</div>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Confidence Gate Mode</div>
+                    <div class="metric {% if settings.strategy_side_confidence_thresholds_enabled %}accent{% else %}warn{% endif %}">
+                        {% if settings.strategy_side_confidence_thresholds_enabled %}SIDE-SPLIT{% else %}GLOBAL{% endif %}
+                    </div>
+                    <div class="footer-note">
+                        Toggle: {% if settings.strategy_side_confidence_thresholds_enabled %}ON{% else %}OFF{% endif %}
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Buy Min Confidence</div>
+                    <div class="metric">{{ "%.0f"|format((settings.effective_strategy_min_confidence_threshold_buy if settings.strategy_side_confidence_thresholds_enabled else settings.effective_strategy_min_confidence_threshold) * 100) }}%</div>
+                    <div class="footer-note">
+                        {% if settings.strategy_side_confidence_thresholds_enabled %}
+                        Side threshold active
+                        {% else %}
+                        Using global threshold
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="label">Sell Min Confidence</div>
+                    <div class="metric">{{ "%.0f"|format((settings.effective_strategy_min_confidence_threshold_sell if settings.strategy_side_confidence_thresholds_enabled else settings.effective_strategy_min_confidence_threshold) * 100) }}%</div>
+                    <div class="footer-note">
+                        {% if settings.strategy_side_confidence_thresholds_enabled %}
+                        Side threshold active
+                        {% else %}
+                        Using global threshold
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="footer-note" style="margin-top: 16px;">
+                The bot evaluates {{ settings.effective_enabled_strategies|length }} strategies every {{ settings.poll_interval_seconds // 3600 }} hour(s) using {{ settings.effective_strategy_candle_interval }} candlesticks.
+                Each decision is based on {{ settings.candle_limit }} recent candles (~{{ (settings.candle_limit / 24)|round(0)|int }} days of historical data).
+                Strict candle-close gate: {{ "ON" if settings.strict_candle_close_enabled else "OFF" }}.
+                Confidence gate: {% if settings.strategy_side_confidence_thresholds_enabled %}
+                BUY {{ "%.0f"|format(settings.effective_strategy_min_confidence_threshold_buy * 100) }}% / SELL {{ "%.0f"|format(settings.effective_strategy_min_confidence_threshold_sell * 100) }}%
+                {% else %}
+                GLOBAL {{ "%.0f"|format(settings.effective_strategy_min_confidence_threshold * 100) }}%
+                {% endif %}.
+            </div>
+        </section>
+
+        {% if symbol_indications %}
+        <section class="card" style="margin-bottom: 18px;">
+            <div class="label">Multi-Symbol Indications</div>
+            <div class="dropdown-shell">
+                <select id="multi-symbol-select" class="symbol-picker" aria-label="Select symbol indication">
+                    {% for item in symbol_indications %}
+                    <option value="{{ loop.index0 }}">{{ item.symbol }}{% if item.suggested_action %} | {{ item.suggested_action }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+
+                {% for item in symbol_indications %}
+                <div class="symbol-panel{% if loop.first %} is-active{% endif %}" data-symbol-panel="{{ loop.index0 }}">
+                    <div class="symbol-detail-grid">
+                        <div class="detail-box">
+                            <div class="label">Symbol</div>
+                            <div class="metric">{{ item.symbol }}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Price</div>
+                            <div class="metric">{% if item.latest_price is not none %}{{ "%.5f"|format(item.latest_price) }}{% else %}--{% endif %}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">RSI</div>
+                            <div class="metric {% if item.rsi is not none and item.rsi >= settings.rsi_sell_threshold %}danger{% elif item.rsi is not none and item.rsi <= settings.rsi_buy_threshold %}accent{% else %}warn{% endif %}">
+                                {% if item.rsi is not none %}{{ "%.2f"|format(item.rsi) }}{% else %}--{% endif %}
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Action</div>
+                            <div class="metric {% if item.suggested_action == 'BUY' %}accent{% elif item.suggested_action == 'SELL' %}danger{% else %}warn{% endif %}">{{ item.suggested_action }}</div>
+                            <div class="footer-note" style="margin-top: 8px;">Base vote {{ item.strategy_vote_action or '--' }}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Confidence</div>
+                            <div class="metric">{% if item.confidence is not none %}{{ "%.1f"|format(item.confidence * 100) }}%{% else %}--{% endif %}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">SL / TP</div>
+                            <div class="metric">SL {% if item.stop_loss is not none %}{{ "%.5f"|format(item.stop_loss) }}{% else %}--{% endif %}</div>
+                            <div class="footer-note" style="margin-top: 8px;">TP {% if item.take_profit is not none %}{{ "%.5f"|format(item.take_profit) }}{% else %}--{% endif %}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Regime</div>
+                            <div class="metric">{% if item.regime %}{{ item.regime }}{% else %}--{% endif %}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Position</div>
+                            <div class="metric">{% if item.position_quantity is not none %}{{ "%.4f"|format(item.position_quantity) }}{% else %}--{% endif %}</div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Status</div>
+                            <div class="metric {% if item.error %}danger{% else %}accent{% endif %}">{% if item.error %}ERROR{% else %}OK{% endif %}</div>
+                            {% if item.error %}
+                            <div class="footer-note danger">{{ item.error }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="detail-box">
+                            <div class="label">Upgraded Gate</div>
+                            <div class="metric {% if item.pro_analysis_gate_blocked %}danger{% else %}accent{% endif %}">{% if item.pro_analysis_gate_blocked %}BLOCKED{% else %}PASS{% endif %}</div>
+                            <div class="footer-note" style="margin-top: 8px;">Vote {{ item.pro_analysis_vote_action or '--' }} | Session {{ item.pro_analysis_session_name or '--' }}</div>
+                        </div>
+                    </div>
+
+                    {% if item.pro_analysis_gate_reasons %}
+                    <div class="footer-note danger" style="margin-top: 12px;">{{ item.pro_analysis_gate_reasons|join(' | ') }}</div>
+                    {% endif %}
+
+                    <div>
+                        <div class="label">{{ settings.effective_enabled_strategies|length }} Strategies Output</div>
+                        <div class="strategy-stack" style="margin-top: 12px;">
+                            {% if item.strategy_details %}
+                                {% for strategy in item.strategy_details %}
+                                <div class="strategy-line">
+                                    <strong>{{ strategy.name }}</strong>
+                                    <span class="{% if strategy.action == 'BUY' %}accent{% elif strategy.action == 'SELL' %}danger{% else %}warn{% endif %}">
+                                        {{ strategy.action }}
+                                    </span>
+                                    | Confidence: {{ "%.1f"|format(strategy.confidence * 100) }}%
+                                </div>
+                                {% endfor %}
+                            {% elif item.strategies %}
+                                <div class="strategy-line">{{ item.strategies|join(', ') }}</div>
+                            {% else %}
+                                <div class="strategy-line">--</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="footer-note">Actions are generated from the explicit enabled strategy stack for each configured MT5 symbol.</div>
+        </section>
+        {% endif %}
+
+        <section class="card">
+            <div class="label">Trade History</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Side</th>
+                            <th>Symbol</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Quote</th>
+                            <th>Outcome</th>
+                            <th>P/L</th>
+                            <th>P/L %</th>
+                            <th>RSI</th>
+                            <th>Status</th>
+                            <th>Strategies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in trades %}
+                        <tr>
+                            <td>{{ trade.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                            <td class="{% if trade.side == 'BUY' %}accent{% else %}danger{% endif %}">{{ trade.side }}</td>
+                            <td>{{ trade.symbol }}</td>
+                            <td>{{ "%.6f"|format(trade.quantity) }}</td>
+                            <td>${{ "%.2f"|format(trade.price) }}</td>
+                            <td>${{ "%.2f"|format(trade.quote_amount) }}</td>
+                            <td class="{% if trade.outcome == 'PROFIT' %}accent{% elif trade.outcome == 'LOSS' %}danger{% else %}warn{% endif %}">
+                                {{ trade.outcome or '--' }}
+                            </td>
+                            <td class="{% if trade.realized_pnl is not none and trade.realized_pnl > 0 %}accent{% elif trade.realized_pnl is not none and trade.realized_pnl < 0 %}danger{% else %}warn{% endif %}">
+                                {% if trade.realized_pnl is not none %}${{ "%.2f"|format(trade.realized_pnl) }}{% else %}--{% endif %}
+                            </td>
+                            <td class="{% if trade.realized_pnl_pct is not none and trade.realized_pnl_pct > 0 %}accent{% elif trade.realized_pnl_pct is not none and trade.realized_pnl_pct < 0 %}danger{% else %}warn{% endif %}">
+                                {% if trade.realized_pnl_pct is not none %}{{ "%.2f"|format(trade.realized_pnl_pct) }}%{% else %}--{% endif %}
+                            </td>
+                            <td>{{ "%.2f"|format(trade.rsi_value) }}</td>
+                            <td>{{ trade.status }}</td>
+                            <td>{{ trade.notes or '--' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="12">No trades yet. Run the bot to generate the first signal.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const runButton = document.getElementById("run-now");
+        const startButton = document.getElementById("start-bot");
+        const stopButton = document.getElementById("stop-bot");
+        const runResult = document.getElementById("run-result");
+        const nextCheckLabelElement = document.getElementById("next-check-label");
+        const botModeElement = document.getElementById("bot-mode");
+        const autoTradingStatusElement = document.getElementById("auto-trading-status");
+        const analysisButton = document.getElementById("run-pro-analysis");
+        const executeAnalysisButton = document.getElementById("execute-pro-analysis");
+        const analysisOutput = document.getElementById("analysis-output");
+        const analysisSymbol = document.getElementById("analysis-symbol");
+        const analysisAccountSize = document.getElementById("analysis-account-size");
+        const analysisRisk = document.getElementById("analysis-risk");
+        const analysisStyle = document.getElementById("analysis-style");
+        const multiSymbolSelect = document.getElementById("multi-symbol-select");
+        const symbolPanels = Array.from(document.querySelectorAll("[data-symbol-panel]"));
+        const controlApiKeyInput = document.getElementById("control-api-key");
+        const startupReviewApproveButton = document.getElementById("startup-review-approve");
+        const startupReviewCancelButton = document.getElementById("startup-review-cancel");
+        const startupReviewResult = document.getElementById("startup-review-result");
+        const mt5ProfileOwner = document.getElementById("mt5-profile-owner");
+        const mt5ProfileLabel = document.getElementById("mt5-profile-label");
+        const mt5ProfileLogin = document.getElementById("mt5-profile-login");
+        const mt5ProfilePassword = document.getElementById("mt5-profile-password");
+        const mt5ProfileServer = document.getElementById("mt5-profile-server");
+        const mt5ProfileTerminal = document.getElementById("mt5-profile-terminal");
+        const mt5ProfilePrimarySymbol = document.getElementById("mt5-profile-primary-symbol");
+        const mt5ProfileSymbols = document.getElementById("mt5-profile-symbols");
+        const mt5ProfileVolume = document.getElementById("mt5-profile-volume");
+        const mt5ProfileSaveButton = document.getElementById("mt5-profile-save");
+        const mt5ProfileTestButton = document.getElementById("mt5-profile-test");
+        const mt5ProfilePreviewButton = document.getElementById("mt5-profile-preview");
+        const mt5ProfileResult = document.getElementById("mt5-profile-result");
+        const mt5ProfileBody = document.getElementById("mt5-profile-body");
+        const mt5ProfilePreviewPanel = document.getElementById("mt5-profile-preview-panel");
+        const mt5ProfilePreviewOutput = document.getElementById("mt5-profile-preview-output");
+        const mt5WorkerKey = document.getElementById("mt5-worker-key");
+        const mt5WorkerProfileId = document.getElementById("mt5-worker-profile-id");
+        const mt5WorkerLabel = document.getElementById("mt5-worker-label");
+        const mt5WorkerTerminal = document.getElementById("mt5-worker-terminal");
+        const mt5WorkerProvisionButton = document.getElementById("mt5-worker-provision");
+        const mt5WorkerAssignButton = document.getElementById("mt5-worker-assign");
+        const mt5WorkerRefreshButton = document.getElementById("mt5-worker-refresh");
+        const mt5WorkerResult = document.getElementById("mt5-worker-result");
+        const mt5WorkerBody = document.getElementById("mt5-worker-body");
+
+        const normalizeMt5Symbols = (primarySymbol, symbols) => {
+            const normalized = [];
+            const candidate = primarySymbol ? primarySymbol.trim() : "";
+            if (candidate) {
+                normalized.push(candidate);
+            }
+            (Array.isArray(symbols) ? symbols : []).forEach((item) => {
+                const value = String(item || "").trim();
+                if (value && !normalized.includes(value)) {
+                    normalized.push(value);
+                }
+            });
+            return normalized;
+        };
+
+        const renderAnalysisSymbols = (symbols, selectedSymbol) => {
+            if (!analysisSymbol) {
+                return;
+            }
+            const normalized = normalizeMt5Symbols(selectedSymbol || "", symbols || []);
+            if (!normalized.length) {
+                return;
+            }
+            const currentValue = selectedSymbol || analysisSymbol.value || normalized[0];
+            analysisSymbol.innerHTML = normalized.map((symbol) => {
+                const selected = symbol === currentValue ? " selected" : "";
+                return `<option value="${symbol}"${selected}>${symbol}</option>`;
+            }).join("");
+            if (!normalized.includes(currentValue)) {
+                analysisSymbol.value = normalized[0];
+            }
+        };
+
+        const syncAnalysisSymbolsFromDraft = () => {
+            const primarySymbol = mt5ProfilePrimarySymbol && mt5ProfilePrimarySymbol.value ? mt5ProfilePrimarySymbol.value.trim() : "";
+            const symbols = mt5ProfileSymbols && mt5ProfileSymbols.value ? mt5ProfileSymbols.value.split(",") : [];
+            const normalized = normalizeMt5Symbols(primarySymbol, symbols);
+            renderAnalysisSymbols(normalized, primarySymbol || normalized[0] || "");
+        };
+
+        const buildHeaders = (withJsonContentType = false) => {
+            const headers = {};
+            if (withJsonContentType) {
+                headers["Content-Type"] = "application/json";
+            }
+            const controlKey = controlApiKeyInput && controlApiKeyInput.value ? controlApiKeyInput.value.trim() : "";
+            if (controlKey) {
+                headers["X-Control-Key"] = controlKey;
+            }
+            return headers;
+        };
+
+        const buildOwnerHeaders = (withJsonContentType = false) => {
+            const headers = buildHeaders(withJsonContentType);
+            const ownerId = mt5ProfileOwner && mt5ProfileOwner.value ? mt5ProfileOwner.value.trim() : "local";
+            if (ownerId) {
+                headers["X-Owner-Id"] = ownerId;
+            }
+            return headers;
+        };
+
+        const readMt5ProfilePayload = () => {
+            const primarySymbol = mt5ProfilePrimarySymbol && mt5ProfilePrimarySymbol.value ? mt5ProfilePrimarySymbol.value.trim() : "";
+            const symbols = normalizeMt5Symbols(
+                primarySymbol,
+                mt5ProfileSymbols && mt5ProfileSymbols.value ? mt5ProfileSymbols.value.split(",") : [],
+            );
+            if (mt5ProfileSymbols) {
+                mt5ProfileSymbols.value = symbols.join(",");
+            }
+            return {
+                owner_id: mt5ProfileOwner && mt5ProfileOwner.value ? mt5ProfileOwner.value.trim() : "local",
+                label: mt5ProfileLabel && mt5ProfileLabel.value ? mt5ProfileLabel.value.trim() : "",
+                login: mt5ProfileLogin && mt5ProfileLogin.value ? Number(mt5ProfileLogin.value) : 0,
+                password: mt5ProfilePassword && mt5ProfilePassword.value ? mt5ProfilePassword.value : "",
+                server: mt5ProfileServer && mt5ProfileServer.value ? mt5ProfileServer.value.trim() : "",
+                terminal_path: mt5ProfileTerminal && mt5ProfileTerminal.value ? mt5ProfileTerminal.value.trim() : "",
+                primary_symbol: primarySymbol,
+                symbols,
+                volume_lots: mt5ProfileVolume && mt5ProfileVolume.value ? Number(mt5ProfileVolume.value) : 0.01,
+                set_active: false,
+            };
+        };
+
+        const renderMt5Profiles = (items) => {
+            if (!mt5ProfileBody || !Array.isArray(items)) {
+                return;
+            }
+            if (!items.length) {
+                mt5ProfileBody.innerHTML = '<tr><td colspan="9">No MT5 profiles stored yet.</td></tr>';
+                return;
+            }
+            mt5ProfileBody.innerHTML = items.map((item) => {
+                const statusClass = item.is_active ? "accent" : (item.last_connection_ok === false ? "danger" : "warn");
+                const statusText = item.is_active ? "ACTIVE" : (item.last_connection_ok === false ? "FAILED" : "STORED");
+                const controlLabel = item.is_active ? "Active" : "Set Active";
+                const primarySymbol = item.primary_symbol || (Array.isArray(item.symbols) && item.symbols.length ? item.symbols[0] : "--");
+                const symbols = Array.isArray(item.symbols) && item.symbols.length ? item.symbols.join(", ") : "--";
+                const passwordMask = item.password_configured ? (item.password_mask || "********") : "--";
+                return `
+                    <tr>
+                        <td>${item.owner_id || "--"}</td>
+                        <td>${item.label || "--"}</td>
+                        <td>${item.login || "--"}</td>
+                        <td>${item.server || "--"}</td>
+                        <td>${primarySymbol}</td>
+                        <td>${symbols}</td>
+                        <td>${passwordMask}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>
+                            <button class="symbol-toggle-btn button-secondary" data-profile-test="${item.id}" data-owner-id="${item.owner_id || ""}">Test</button>
+                            <button class="symbol-toggle-btn button-secondary" data-profile-preview="${item.id}" data-owner-id="${item.owner_id || ""}">Preview</button>
+                            <button class="symbol-toggle-btn ${item.is_active ? "is-on" : "is-off"}" data-profile-activate="${item.id}" data-owner-id="${item.owner_id || ""}">
+                                ${controlLabel}
+                            </button>
+                            <button class="symbol-toggle-btn button-secondary" data-profile-delete="${item.id}" data-owner-id="${item.owner_id || ""}">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        };
+
+        const readWorkerPayload = () => ({
+            owner_id: mt5ProfileOwner && mt5ProfileOwner.value ? mt5ProfileOwner.value.trim() : {{ dashboard_owner_id|tojson }},
+            worker_key: mt5WorkerKey && mt5WorkerKey.value ? mt5WorkerKey.value.trim() : "",
+            profile_id: mt5WorkerProfileId && mt5WorkerProfileId.value ? Number(mt5WorkerProfileId.value) : null,
+            label: mt5WorkerLabel && mt5WorkerLabel.value ? mt5WorkerLabel.value.trim() : null,
+            terminal_path: mt5WorkerTerminal && mt5WorkerTerminal.value ? mt5WorkerTerminal.value.trim() : null,
+        });
+
+        const renderMt5Workers = (items) => {
+            if (!mt5WorkerBody || !Array.isArray(items)) {
+                return;
+            }
+            if (!items.length) {
+                mt5WorkerBody.innerHTML = '<tr><td colspan="6">No managed workers provisioned for this owner yet.</td></tr>';
+                return;
+            }
+            mt5WorkerBody.innerHTML = items.map((item) => `
+                <tr>
+                    <td>${item.worker_key || "--"}</td>
+                    <td>${item.owner_id || "--"}</td>
+                    <td>${item.profile_id ? `${item.profile_id}${item.profile_label ? ` · ${item.profile_label}` : ""}` : "--"}</td>
+                    <td class="${item.status === "ONLINE" ? "accent" : (item.status === "ERROR" ? "danger" : "warn")}">${item.status || "--"}</td>
+                    <td>${item.heartbeat_at || "--"}</td>
+                    <td class="${item.last_error ? "danger" : "accent"}">${item.last_error || "--"}</td>
+                </tr>
+            `).join("");
+        };
+
+        if (mt5ProfilePrimarySymbol) {
+            mt5ProfilePrimarySymbol.addEventListener("input", syncAnalysisSymbolsFromDraft);
+        }
+        if (mt5ProfileSymbols) {
+            mt5ProfileSymbols.addEventListener("input", syncAnalysisSymbolsFromDraft);
+        }
+        renderAnalysisSymbols({{ dashboard_mt5_symbols|tojson }}, {{ dashboard_mt5_primary_symbol|tojson }});
+        renderMt5Workers({{ mt5_workers|tojson }});
+
+        const refreshMt5Workers = async () => {
+            if (!mt5WorkerResult) {
+                return;
+            }
+            const response = await fetch("/api/mt5/workers", { method: "GET", headers: buildOwnerHeaders() });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.detail || "Could not load MT5 workers");
+            }
+            renderMt5Workers(result.items || []);
+        };
+
+        const renderMt5SnapshotPreview = (payload, title) => {
+            if (!mt5ProfilePreviewPanel || !mt5ProfilePreviewOutput) {
+                return;
+            }
+            const snapshot = payload && payload.snapshot ? payload.snapshot : null;
+            if (!snapshot) {
+                mt5ProfilePreviewPanel.style.display = "block";
+                mt5ProfilePreviewOutput.textContent = "No snapshot returned.";
+                return;
+            }
+            const strategies = Array.isArray(snapshot.strategies) && snapshot.strategies.length ? snapshot.strategies.join(", ") : "none";
+            const lines = [
+                `${title}`,
+                `Primary symbol: ${snapshot.market_data_symbol || "--"}`,
+                `Provider: ${(snapshot.market_data_provider || "--").toUpperCase()}`,
+                `Price: ${Number(snapshot.latest_price || 0).toFixed(5)}`,
+                `RSI: ${Number(snapshot.rsi || 0).toFixed(2)}`,
+                `Action: ${snapshot.suggested_action || "--"}`,
+                `Vote: ${snapshot.strategy_vote_action || "--"}`,
+                `Confidence: ${snapshot.confidence !== undefined && snapshot.confidence !== null ? `${(Number(snapshot.confidence) * 100).toFixed(1)}%` : "--"}`,
+                `Regime: ${snapshot.regime || "--"}`,
+                `Strategies: ${strategies}`,
+            ];
+            mt5ProfilePreviewPanel.style.display = "block";
+            mt5ProfilePreviewOutput.textContent = lines.join("\n");
+        };
+
+        if (multiSymbolSelect && symbolPanels.length) {
+            const setActivePanel = (selectedIndex) => {
+                symbolPanels.forEach((panel) => {
+                    panel.classList.toggle("is-active", panel.dataset.symbolPanel === selectedIndex);
+                });
+            };
+
+            setActivePanel(multiSymbolSelect.value);
+            multiSymbolSelect.addEventListener("change", (event) => {
+                setActivePanel(event.target.value);
+            });
+        }
+
+        runButton.addEventListener("click", async () => {
+            runButton.disabled = true;
+            runResult.textContent = "Running strategy...";
+            try {
+                const response = await fetch("/api/bot/run", { method: "POST", headers: buildHeaders() });
+                const payload = await response.json();
+                if (!response.ok) {
+                    throw new Error(payload.detail || "Strategy run failed");
+                }
+                if (payload.mode === "multi-symbol") {
+                    const executed = (payload.results || []).filter(item => !!item.trade).length;
+                    const buys = (payload.results || []).filter(item => item.action === "BUY").length;
+                    const sells = (payload.results || []).filter(item => item.action === "SELL").length;
+                    const holds = (payload.results || []).filter(item => item.action === "HOLD").length;
+                    const votedBuys = (payload.results || []).filter(item => item.strategy_vote_action === "BUY").length;
+                    const votedSells = (payload.results || []).filter(item => item.strategy_vote_action === "SELL").length;
+                    const votedHolds = (payload.results || []).filter(item => item.strategy_vote_action === "HOLD").length;
+                    const errors = payload.errors || {};
+                    const errorEntries = Object.entries(errors);
+                    const errorCount = errorEntries.length;
+                    const errorPreview = errorEntries.slice(0, 3).map(([symbol, detail]) => `${symbol}: ${detail}`).join(" | ");
+                    const proBlocked = (payload.results || []).filter(item => item.pro_analysis_gate_blocked).length;
+                    runResult.textContent = `Multi-symbol run complete | Vote BUY: ${votedBuys} SELL: ${votedSells} HOLD: ${votedHolds} | Final BUY: ${buys} SELL: ${sells} HOLD: ${holds} | Pro Gate Blocked: ${proBlocked} | Executed trades: ${executed} | Errors: ${errorCount}${errorPreview ? ` | ${errorPreview}` : ""}`;
+                } else {
+                    const strategies = payload.strategies?.length ? payload.strategies.join(", ") : "none";
+                    const votedAction = payload.strategy_vote_action || payload.pre_confidence_action || payload.action;
+                    const proGate = payload.pro_analysis_gate_blocked ? ` | Pro Gate: BLOCKED (${(payload.pro_analysis_gate_reasons || []).join(' ; ')})` : " | Pro Gate: PASS";
+                    runResult.textContent = `Vote: ${votedAction} | Final: ${payload.action} | RSI: ${payload.rsi.toFixed(2)} | Price: ${payload.price.toFixed(2)} | Feed: ${payload.market_data_provider.toUpperCase()} ${payload.market_data_symbol} | Regime: ${payload.regime} | Strategies: ${strategies}${proGate}`;
+                }
+                window.setTimeout(() => {
+                    void refreshStatus();
+                }, 500);
+            } catch (error) {
+                runResult.textContent = error.message;
+            } finally {
+                runButton.disabled = false;
+            }
+        });
+
+        if (startButton) {
+            startButton.addEventListener("click", async () => {
+                startButton.disabled = true;
+                runResult.textContent = "Starting bot automation...";
+                try {
+                    const response = await fetch("/api/bot/start", { method: "POST", headers: buildHeaders() });
+                    const payload = await response.json();
+                    if (!response.ok) {
+                        throw new Error(payload.detail || "Bot start failed");
+                    }
+                    const started = Array.isArray(payload.started_tasks) ? payload.started_tasks.join(", ") : "none";
+                    runResult.textContent = `Bot started. Started: ${started || "none"}.`;
+                    await refreshStatus();
+                } catch (error) {
+                    runResult.textContent = error.message;
+                } finally {
+                    startButton.disabled = false;
+                }
+            });
+        }
+
+        if (stopButton) {
+            stopButton.addEventListener("click", async () => {
+                stopButton.disabled = true;
+                runResult.textContent = "Stopping bot automation...";
+                try {
+                    const response = await fetch("/api/bot/stop", { method: "POST", headers: buildHeaders() });
+                    const payload = await response.json();
+                    if (!response.ok) {
+                        throw new Error(payload.detail || "Bot stop failed");
+                    }
+                    const cancelled = Array.isArray(payload.cancelled_tasks) ? payload.cancelled_tasks.join(", ") : "none";
+                    runResult.textContent = `Bot stopped. Cancelled: ${cancelled || "none"}.`;
+                    await refreshStatus();
+                } catch (error) {
+                    runResult.textContent = error.message;
+                } finally {
+                    stopButton.disabled = false;
+                }
+            });
+        }
+
+        if (startupReviewApproveButton) {
+            startupReviewApproveButton.addEventListener("click", async () => {
+                startupReviewApproveButton.disabled = true;
+                if (startupReviewCancelButton) {
+                    startupReviewCancelButton.disabled = true;
+                }
+                if (startupReviewResult) {
+                    startupReviewResult.textContent = "Approving startup execution and resuming bot...";
+                }
+                try {
+                    const response = await fetch("/api/bot/startup-review/approve", { method: "POST", headers: buildHeaders() });
+                    const payload = await response.json();
+                    if (!response.ok) {
+                        throw new Error(payload.detail || "Could not approve startup execution review");
+                    }
+                    if (startupReviewResult) {
+                        startupReviewResult.textContent = "Startup execution approved. Reloading dashboard...";
+                    }
+                    window.setTimeout(() => window.location.reload(), 500);
+                } catch (error) {
+                    if (startupReviewResult) {
+                        startupReviewResult.textContent = error.message;
+                    }
+                    startupReviewApproveButton.disabled = false;
+                    if (startupReviewCancelButton) {
+                        startupReviewCancelButton.disabled = false;
+                    }
+                }
+            });
+        }
+
+        if (startupReviewCancelButton) {
+            startupReviewCancelButton.addEventListener("click", async () => {
+                startupReviewCancelButton.disabled = true;
+                if (startupReviewApproveButton) {
+                    startupReviewApproveButton.disabled = true;
+                }
+                if (startupReviewResult) {
+                    startupReviewResult.textContent = "Cancelling queued startup execution...";
+                }
+                try {
+                    const response = await fetch("/api/bot/startup-review/cancel", { method: "POST", headers: buildHeaders() });
+                    const payload = await response.json();
+                    if (!response.ok) {
+                        throw new Error(payload.detail || "Could not cancel startup execution review");
+                    }
+                    const cancelledCount = Array.isArray(payload.cancelled_jobs) ? payload.cancelled_jobs.length : 0;
+                    if (startupReviewResult) {
+                        startupReviewResult.textContent = `Startup execution cancelled. Cancelled queued jobs: ${cancelledCount}. Reloading dashboard...`;
+                    }
+                    window.setTimeout(() => window.location.reload(), 500);
+                } catch (error) {
+                    if (startupReviewResult) {
+                        startupReviewResult.textContent = error.message;
+                    }
+                    startupReviewCancelButton.disabled = false;
+                    if (startupReviewApproveButton) {
+                        startupReviewApproveButton.disabled = false;
+                    }
+                }
+            });
+        }
+
+        if (analysisButton) {
+            analysisButton.addEventListener("click", async () => {
+                analysisButton.disabled = true;
+                analysisOutput.textContent = "Running professional analysis...";
+
+                const payload = {
+                    symbols: analysisSymbol && analysisSymbol.value ? [analysisSymbol.value] : [],
+                    risk_tolerance: analysisRisk ? analysisRisk.value : "MEDIUM",
+                    trading_style: analysisStyle ? analysisStyle.value : "DAY TRADING",
+                };
+                if (analysisAccountSize && analysisAccountSize.value) {
+                    payload.account_size = Number(analysisAccountSize.value);
+                }
+
+                try {
+                    const response = await fetch("/api/analysis/pro", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Professional analysis failed");
+                    }
+                    const report = (result.reports || [])[0];
+                    analysisOutput.textContent = report?.formatted_report || JSON.stringify(result, null, 2);
+                } catch (error) {
+                    analysisOutput.textContent = error.message;
+                } finally {
+                    analysisButton.disabled = false;
+                }
+            });
+        }
+
+        if (executeAnalysisButton) {
+            executeAnalysisButton.addEventListener("click", async () => {
+                executeAnalysisButton.disabled = true;
+                analysisOutput.textContent = "Running professional analysis and preparing MT5 execution...";
+
+                const payload = {
+                    symbol: analysisSymbol && analysisSymbol.value ? analysisSymbol.value : "",
+                    risk_tolerance: analysisRisk ? analysisRisk.value : "MEDIUM",
+                    trading_style: analysisStyle ? analysisStyle.value : "DAY TRADING",
+                };
+                if (analysisAccountSize && analysisAccountSize.value) {
+                    payload.account_size = Number(analysisAccountSize.value);
+                }
+
+                try {
+                    const response = await fetch("/api/analysis/pro/execute", {
+                        method: "POST",
+                        headers: buildHeaders(true),
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Professional analysis execution failed");
+                    }
+                    const trade = result.trade;
+                    const plan = result.analysis_plan || {};
+                    const gateReasons = Array.isArray(result.pro_analysis_gate_reasons) ? result.pro_analysis_gate_reasons.join(" ; ") : "";
+                    const lines = [
+                        `Symbol: ${result.execution_symbol || payload.symbol || "--"}`,
+                        `Requested style: ${result.requested_trading_style || payload.trading_style}`,
+                        `Requested risk: ${result.requested_risk_tolerance || payload.risk_tolerance}`,
+                        `Weighted vote: ${plan.weighted_vote_action || result.pro_analysis_vote_action || "--"}`,
+                        `Final action: ${result.action || result.pro_analysis_final_action || "--"}`,
+                        `Session: ${result.pro_analysis_session_name || plan.session_name || "--"}`,
+                        `Quality gate: ${result.pro_analysis_quality_gate_passed ? "PASS" : "BLOCKED"}`,
+                    ];
+                    if (gateReasons) {
+                        lines.push(`Gate reasons: ${gateReasons}`);
+                    }
+                    if (result.execution_block) {
+                        lines.push(`Execution block: ${result.execution_block}`);
+                    }
+                    if (trade) {
+                        lines.push(`Trade status: ${trade.status || "--"}`);
+                        lines.push(`Trade side: ${trade.side || result.action || "--"}`);
+                        lines.push(`Trade symbol: ${trade.execution_symbol || trade.symbol || result.execution_symbol || "--"}`);
+                        lines.push(`Trade quantity: ${trade.quantity ?? "--"}`);
+                        lines.push(`Trade price: ${trade.price ?? "--"}`);
+                    }
+                    analysisOutput.textContent = lines.join("\n");
+                } catch (error) {
+                    analysisOutput.textContent = error.message;
+                } finally {
+                    executeAnalysisButton.disabled = false;
+                }
+            });
+        }
+
+        // Update next check time
+        const pollIntervalSeconds = {{ settings.poll_interval_seconds }};
+        const lastRunElement = document.getElementById("last-run");
+        const lastErrorElement = document.getElementById("last-error");
+        const mt5ActivePositionsElement = document.getElementById("mt5-active-positions");
+        const mt5ActivePositionsCapElement = document.getElementById("mt5-active-positions-cap");
+        const mt5ReadinessBody = document.getElementById("mt5-readiness-body");
+        const mt5LiveOrderToggleBody = document.getElementById("mt5-live-order-toggle-body");
+        const mt5ToggleResult = document.getElementById("mt5-toggle-result");
+        const mt5AtrRecoveryToggleBody = document.getElementById("mt5-atr-recovery-toggle-body");
+        const mt5AtrRecoveryToggleResult = document.getElementById("mt5-atr-recovery-toggle-result");
+
+        const renderMt5LiveOrderToggles = (items) => {
+            if (!mt5LiveOrderToggleBody || !Array.isArray(items)) {
+                return;
+            }
+            const rows = items.map((item) => {
+                const enabled = Boolean(item.enabled);
+                const statusClass = enabled ? "accent" : "danger";
+                const btnClass = enabled ? "is-on" : "is-off";
+                const actionText = enabled ? "Turn OFF" : "Turn ON";
+                const enabledAttr = enabled ? "true" : "false";
+                return `
+                    <tr>
+                        <td>${item.symbol || "--"}</td>
+                        <td class="${statusClass}">${enabled ? "ON" : "OFF"}</td>
+                        <td>
+                            <button
+                                class="symbol-toggle-btn ${btnClass}"
+                                data-toggle-symbol="${item.symbol || ""}"
+                                data-toggle-enabled="${enabledAttr}"
+                            >
+                                ${actionText}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            mt5LiveOrderToggleBody.innerHTML = rows.join("");
+        };
+
+        const renderMt5AtrRecoveryToggles = (items) => {
+            if (!mt5AtrRecoveryToggleBody || !Array.isArray(items)) {
+                return;
+            }
+            const rows = items.map((item) => {
+                const enabled = Boolean(item.enabled);
+                const statusClass = enabled ? "accent" : "danger";
+                const btnClass = enabled ? "is-on" : "is-off";
+                const actionText = enabled ? "Turn OFF" : "Turn ON";
+                const enabledAttr = enabled ? "true" : "false";
+                return `
+                    <tr>
+                        <td>${item.symbol || "--"}</td>
+                        <td class="${statusClass}">${enabled ? "ON" : "OFF"}</td>
+                        <td>
+                            <button
+                                class="symbol-toggle-btn ${btnClass}"
+                                data-atr-toggle-symbol="${item.symbol || ""}"
+                                data-atr-toggle-enabled="${enabledAttr}"
+                            >
+                                ${actionText}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            mt5AtrRecoveryToggleBody.innerHTML = rows.join("");
+        };
+
+        if (mt5LiveOrderToggleBody) {
+            mt5LiveOrderToggleBody.addEventListener("click", async (event) => {
+                const button = event.target.closest("button[data-toggle-symbol]");
+                if (!button) {
+                    return;
+                }
+
+                const symbol = button.getAttribute("data-toggle-symbol") || "";
+                const currentlyEnabled = (button.getAttribute("data-toggle-enabled") || "false") === "true";
+                const nextEnabled = !currentlyEnabled;
+
+                if (!symbol) {
+                    return;
+                }
+
+                button.disabled = true;
+                if (mt5ToggleResult) {
+                    mt5ToggleResult.textContent = `Updating ${symbol}...`;
+                }
+
+                try {
+                    const response = await fetch("/api/settings/mt5-live-order-symbol", {
+                        method: "POST",
+                        headers: buildHeaders(true),
+                        body: JSON.stringify({ symbol, enabled: nextEnabled }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok) {
+                        throw new Error(payload.detail || "Toggle update failed");
+                    }
+                    renderMt5LiveOrderToggles(payload.items || []);
+                    if (mt5ToggleResult) {
+                        mt5ToggleResult.textContent = `${symbol} is now ${nextEnabled ? "ON" : "OFF"} for new live entries.`;
+                    }
+                } catch (error) {
+                    if (mt5ToggleResult) {
+                        mt5ToggleResult.textContent = error.message;
+                    }
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        }
+
+        if (mt5AtrRecoveryToggleBody) {
+            mt5AtrRecoveryToggleBody.addEventListener("click", async (event) => {
+                const button = event.target.closest("button[data-atr-toggle-symbol]");
+                if (!button) {
+                    return;
+                }
+
+                const symbol = button.getAttribute("data-atr-toggle-symbol") || "";
+                const currentlyEnabled = (button.getAttribute("data-atr-toggle-enabled") || "false") === "true";
+                const nextEnabled = !currentlyEnabled;
+
+                if (!symbol) {
+                    return;
+                }
+
+                button.disabled = true;
+                if (mt5AtrRecoveryToggleResult) {
+                    mt5AtrRecoveryToggleResult.textContent = `Updating ${symbol} ATR recovery...`;
+                }
+
+                try {
+                    const response = await fetch("/api/settings/mt5-atr-recovery-symbol", {
+                        method: "POST",
+                        headers: buildHeaders(true),
+                        body: JSON.stringify({ symbol, enabled: nextEnabled }),
+                    });
+                    const payload = await response.json();
+                    if (!response.ok) {
+                        throw new Error(payload.detail || "ATR recovery toggle update failed");
+                    }
+                    renderMt5AtrRecoveryToggles(payload.items || []);
+                    if (mt5AtrRecoveryToggleResult) {
+                        mt5AtrRecoveryToggleResult.textContent = `${symbol} ATR recovery is now ${nextEnabled ? "ON" : "OFF"}.`;
+                    }
+                } catch (error) {
+                    if (mt5AtrRecoveryToggleResult) {
+                        mt5AtrRecoveryToggleResult.textContent = error.message;
+                    }
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        }
+
+        if (mt5ProfileSaveButton) {
+            mt5ProfileSaveButton.addEventListener("click", async () => {
+                const payload = readMt5ProfilePayload();
+                mt5ProfileSaveButton.disabled = true;
+                mt5ProfileResult.textContent = "Saving MT5 profile...";
+                try {
+                    const response = await fetch("/api/mt5/profiles", {
+                        method: "POST",
+                        headers: buildOwnerHeaders(true),
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Could not save MT5 profile");
+                    }
+                    renderMt5Profiles(result.items || []);
+                    const savedSymbols = result.item?.symbols || payload.symbols;
+                    const savedPrimary = result.item?.primary_symbol || payload.primary_symbol || (savedSymbols[0] || "");
+                    renderAnalysisSymbols(savedSymbols, savedPrimary);
+                    if (result.snapshot) {
+                        renderMt5SnapshotPreview(result, `Runtime snapshot for ${savedPrimary || result.item?.label || payload.label}`);
+                    } else if (result.snapshot_error) {
+                        if (mt5ProfilePreviewPanel) {
+                            mt5ProfilePreviewPanel.style.display = "block";
+                        }
+                        if (mt5ProfilePreviewOutput) {
+                            mt5ProfilePreviewOutput.textContent = result.snapshot_error;
+                        }
+                    }
+                    mt5ProfileResult.textContent = `Saved profile ${result.item?.label || payload.label} for ${result.item?.server || payload.server}.`;
+                    if (mt5ProfilePassword) {
+                        mt5ProfilePassword.value = "";
+                    }
+                    if (result.active_profile) {
+                        window.setTimeout(() => window.location.reload(), 500);
+                    }
+                } catch (error) {
+                    mt5ProfileResult.textContent = error.message;
+                } finally {
+                    mt5ProfileSaveButton.disabled = false;
+                }
+            });
+        }
+
+        if (mt5ProfileTestButton) {
+            mt5ProfileTestButton.addEventListener("click", async () => {
+                const payload = readMt5ProfilePayload();
+                mt5ProfileTestButton.disabled = true;
+                mt5ProfileResult.textContent = "Testing MT5 connection...";
+                try {
+                    const response = await fetch("/api/mt5/profiles/test", {
+                        method: "POST",
+                        headers: buildOwnerHeaders(true),
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Could not test MT5 profile");
+                    }
+                    if (!result.ok) {
+                        throw new Error(result.error || "MT5 connection failed");
+                    }
+                    mt5ProfileResult.textContent = `Connection OK | Equity: ${Number(result.account?.equity || 0).toFixed(2)} | Balance: ${Number(result.account?.balance || 0).toFixed(2)} | Active positions: ${result.active_positions ?? "--"}`;
+                } catch (error) {
+                    mt5ProfileResult.textContent = error.message;
+                } finally {
+                    mt5ProfileTestButton.disabled = false;
+                }
+            });
+        }
+
+        if (mt5ProfilePreviewButton) {
+            mt5ProfilePreviewButton.addEventListener("click", async () => {
+                const payload = readMt5ProfilePayload();
+                mt5ProfilePreviewButton.disabled = true;
+                mt5ProfileResult.textContent = "Previewing MT5 snapshot...";
+                try {
+                    const response = await fetch("/api/mt5/profiles/preview", {
+                        method: "POST",
+                        headers: buildOwnerHeaders(true),
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Could not preview MT5 snapshot");
+                    }
+                    renderMt5SnapshotPreview(result, `Draft profile preview for ${result.preview_profile?.primary_symbol || payload.primary_symbol || "--"}`);
+                    renderAnalysisSymbols(result.preview_profile?.symbols || payload.symbols, result.preview_profile?.primary_symbol || payload.primary_symbol || "");
+                    mt5ProfileResult.textContent = `Preview loaded for ${result.preview_profile?.primary_symbol || payload.primary_symbol || "--"}.`;
+                } catch (error) {
+                    if (mt5ProfilePreviewPanel) {
+                        mt5ProfilePreviewPanel.style.display = "block";
+                    }
+                    if (mt5ProfilePreviewOutput) {
+                        mt5ProfilePreviewOutput.textContent = error.message;
+                    }
+                    mt5ProfileResult.textContent = error.message;
+                } finally {
+                    mt5ProfilePreviewButton.disabled = false;
+                }
+            });
+        }
+
+        if (mt5ProfileBody) {
+            mt5ProfileBody.addEventListener("click", async (event) => {
+                const testButton = event.target.closest("button[data-profile-test]");
+                if (testButton) {
+                    const profileId = Number(testButton.getAttribute("data-profile-test") || "0");
+                    const ownerId = testButton.getAttribute("data-owner-id") || "";
+                    if (!profileId) {
+                        return;
+                    }
+                    testButton.disabled = true;
+                    mt5ProfileResult.textContent = `Testing saved MT5 profile ${profileId}...`;
+                    try {
+                        const response = await fetch(`/api/mt5/profiles/${profileId}/test`, {
+                            method: "POST",
+                            headers: buildOwnerHeaders(true),
+                            body: JSON.stringify({ owner_id: ownerId || null }),
+                        });
+                        const result = await response.json();
+                        if (!response.ok) {
+                            throw new Error(result.detail || "Could not test saved MT5 profile");
+                        }
+                        if (result.profile) {
+                            const listResponse = await fetch("/api/mt5/profiles", { method: "GET", headers: buildOwnerHeaders() });
+                            const listPayload = await listResponse.json();
+                            if (listResponse.ok) {
+                                renderMt5Profiles(listPayload.items || []);
+                            }
+                        }
+                        if (!result.ok) {
+                            throw new Error(result.error || "MT5 connection failed");
+                        }
+                        mt5ProfileResult.textContent = `Saved profile OK | Equity: ${Number(result.account?.equity || 0).toFixed(2)} | Balance: ${Number(result.account?.balance || 0).toFixed(2)} | Active positions: ${result.active_positions ?? "--"}`;
+                    } catch (error) {
+                        mt5ProfileResult.textContent = error.message;
+                    } finally {
+                        testButton.disabled = false;
+                    }
+                    return;
+                }
+
+                const previewButton = event.target.closest("button[data-profile-preview]");
+                if (previewButton) {
+                    const profileId = Number(previewButton.getAttribute("data-profile-preview") || "0");
+                    const ownerId = previewButton.getAttribute("data-owner-id") || "";
+                    if (!profileId) {
+                        return;
+                    }
+                    previewButton.disabled = true;
+                    mt5ProfileResult.textContent = `Previewing saved MT5 profile ${profileId}...`;
+                    try {
+                        const response = await fetch(`/api/mt5/profiles/${profileId}/preview`, {
+                            method: "POST",
+                            headers: buildOwnerHeaders(true),
+                            body: JSON.stringify({ owner_id: ownerId || null }),
+                        });
+                        const result = await response.json();
+                        if (!response.ok) {
+                            throw new Error(result.detail || "Could not preview saved MT5 profile");
+                        }
+                        renderMt5SnapshotPreview(result, `Saved profile preview for ${result.profile?.primary_symbol || profileId}`);
+                        renderAnalysisSymbols(result.profile?.symbols || [], result.profile?.primary_symbol || "");
+                        mt5ProfileResult.textContent = `Preview loaded for ${result.profile?.primary_symbol || profileId}.`;
+                    } catch (error) {
+                        if (mt5ProfilePreviewPanel) {
+                            mt5ProfilePreviewPanel.style.display = "block";
+                        }
+                        if (mt5ProfilePreviewOutput) {
+                            mt5ProfilePreviewOutput.textContent = error.message;
+                        }
+                        mt5ProfileResult.textContent = error.message;
+                    } finally {
+                        previewButton.disabled = false;
+                    }
+                    return;
+                }
+
+                const button = event.target.closest("button[data-profile-activate]");
+                if (button) {
+                    const profileId = Number(button.getAttribute("data-profile-activate") || "0");
+                    const ownerId = button.getAttribute("data-owner-id") || "";
+                    if (!profileId) {
+                        return;
+                    }
+                    button.disabled = true;
+                    mt5ProfileResult.textContent = `Activating MT5 profile ${profileId}...`;
+                    try {
+                        const response = await fetch(`/api/mt5/profiles/${profileId}/activate`, {
+                            method: "POST",
+                            headers: buildOwnerHeaders(true),
+                            body: JSON.stringify({ owner_id: ownerId || null }),
+                        });
+                        const result = await response.json();
+                        if (!response.ok) {
+                            throw new Error(result.detail || "Could not activate MT5 profile");
+                        }
+                        renderMt5Profiles(result.items || []);
+                        renderAnalysisSymbols(result.item?.symbols || [], result.item?.primary_symbol || "");
+                        if (result.snapshot) {
+                            renderMt5SnapshotPreview(result, `Runtime snapshot for ${result.item?.primary_symbol || profileId}`);
+                        } else if (result.snapshot_error) {
+                            if (mt5ProfilePreviewPanel) {
+                                mt5ProfilePreviewPanel.style.display = "block";
+                            }
+                            if (mt5ProfilePreviewOutput) {
+                                mt5ProfilePreviewOutput.textContent = result.snapshot_error;
+                            }
+                        }
+                        mt5ProfileResult.textContent = `Active MT5 profile is now ${result.item?.label || profileId}.`;
+                        window.setTimeout(() => window.location.reload(), 500);
+                    } catch (error) {
+                        mt5ProfileResult.textContent = error.message;
+                    } finally {
+                        button.disabled = false;
+                    }
+                    return;
+                }
+
+                const deleteButton = event.target.closest("button[data-profile-delete]");
+                if (!deleteButton) {
+                    return;
+                }
+                const profileId = Number(deleteButton.getAttribute("data-profile-delete") || "0");
+                const ownerId = deleteButton.getAttribute("data-owner-id") || "";
+                if (!profileId) {
+                    return;
+                }
+                const confirmed = window.confirm(`Delete MT5 profile ${profileId}? This cannot be undone.`);
+                if (!confirmed) {
+                    return;
+                }
+                deleteButton.disabled = true;
+                mt5ProfileResult.textContent = `Deleting MT5 profile ${profileId}...`;
+                try {
+                    const response = await fetch(`/api/mt5/profiles/${profileId}`, {
+                        method: "DELETE",
+                        headers: buildOwnerHeaders(true),
+                        body: JSON.stringify({ owner_id: ownerId || null }),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Could not delete MT5 profile");
+                    }
+                    renderMt5Profiles(result.items || []);
+                    mt5ProfileResult.textContent = `Deleted MT5 profile ${profileId}.`;
+                } catch (error) {
+                    mt5ProfileResult.textContent = error.message;
+                } finally {
+                    deleteButton.disabled = false;
+                }
+            });
+        }
+
+        if (mt5WorkerRefreshButton) {
+            mt5WorkerRefreshButton.addEventListener("click", async () => {
+                mt5WorkerRefreshButton.disabled = true;
+                mt5WorkerResult.textContent = "Refreshing managed workers...";
+                try {
+                    await refreshMt5Workers();
+                    mt5WorkerResult.textContent = "Managed workers refreshed.";
+                } catch (error) {
+                    mt5WorkerResult.textContent = error.message;
+                } finally {
+                    mt5WorkerRefreshButton.disabled = false;
+                }
+            });
+        }
+
+        if (mt5WorkerProvisionButton) {
+            mt5WorkerProvisionButton.addEventListener("click", async () => {
+                const payload = readWorkerPayload();
+                if (!payload.worker_key) {
+                    mt5WorkerResult.textContent = "Worker key is required.";
+                    return;
+                }
+                mt5WorkerProvisionButton.disabled = true;
+                mt5WorkerResult.textContent = `Provisioning worker ${payload.worker_key}...`;
+                try {
+                    const response = await fetch("/api/mt5/workers/provision", {
+                        method: "POST",
+                        headers: buildOwnerHeaders(true),
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Could not provision MT5 worker");
+                    }
+                    renderMt5Workers(result.items || []);
+                    mt5WorkerResult.textContent = `Provisioned worker ${result.item?.worker_key || payload.worker_key}.`;
+                } catch (error) {
+                    mt5WorkerResult.textContent = error.message;
+                } finally {
+                    mt5WorkerProvisionButton.disabled = false;
+                }
+            });
+        }
+
+        if (mt5WorkerAssignButton) {
+            mt5WorkerAssignButton.addEventListener("click", async () => {
+                const payload = readWorkerPayload();
+                if (!payload.worker_key) {
+                    mt5WorkerResult.textContent = "Worker key is required.";
+                    return;
+                }
+                mt5WorkerAssignButton.disabled = true;
+                mt5WorkerResult.textContent = `Assigning worker ${payload.worker_key}...`;
+                try {
+                    const response = await fetch(`/api/mt5/workers/${encodeURIComponent(payload.worker_key)}/assign`, {
+                        method: "POST",
+                        headers: buildOwnerHeaders(true),
+                        body: JSON.stringify({
+                            owner_id: payload.owner_id,
+                            profile_id: payload.profile_id,
+                            label: payload.label,
+                            terminal_path: payload.terminal_path,
+                        }),
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.detail || "Could not assign MT5 worker");
+                    }
+                    renderMt5Workers(result.items || []);
+                    mt5WorkerResult.textContent = payload.profile_id
+                        ? `Assigned worker ${payload.worker_key} to profile ${payload.profile_id}.`
+                        : `Cleared profile binding for worker ${payload.worker_key}.`;
+                } catch (error) {
+                    mt5WorkerResult.textContent = error.message;
+                } finally {
+                    mt5WorkerAssignButton.disabled = false;
+                }
+            });
+        }
+
+        const updateNextCheckTime = () => {
+            if (!lastRunElement || !nextCheckLabelElement) {
+                return;
+            }
+            const lastRunText = lastRunElement.textContent;
+            if (lastRunText === "Never") {
+                nextCheckLabelElement.textContent = "Pending first run";
+                return;
+            }
+
+            try {
+                const lastRun = new Date(lastRunText);
+                const nextCheck = new Date(lastRun.getTime() + pollIntervalSeconds * 1000);
+                const now = new Date();
+                const secondsUntilNext = Math.max(0, (nextCheck - now) / 1000);
+
+                let timeString = "";
+                if (secondsUntilNext <= 0) {
+                    timeString = "Due now";
+                } else if (secondsUntilNext < 60) {
+                    timeString = Math.round(secondsUntilNext) + "s";
+                } else if (secondsUntilNext < 3600) {
+                    timeString = Math.round(secondsUntilNext / 60) + "m";
+                } else {
+                    const hours = Math.floor(secondsUntilNext / 3600);
+                    const mins = Math.round((secondsUntilNext % 3600) / 60);
+                    timeString = hours + "h " + mins + "m";
+                }
+
+                nextCheckLabelElement.textContent = timeString;
+            } catch (e) {
+                console.log("Could not parse last run time");
+                nextCheckLabelElement.textContent = "Unknown";
+            }
+        };
+
+        updateNextCheckTime();
+        setInterval(updateNextCheckTime, 1000);
+
+        const refreshStatus = async () => {
+            try {
+                const response = await fetch("/api/status", { method: "GET" });
+                if (!response.ok) {
+                    return;
+                }
+                const payload = await response.json();
+                const botState = payload.bot_state || {};
+
+                if (autoTradingStatusElement) {
+                    autoTradingStatusElement.textContent = botState.auto_trading_enabled ? "ON" : "OFF";
+                }
+                if (botModeElement && typeof botState.mode === "string") {
+                    botModeElement.textContent = botState.mode;
+                    botModeElement.classList.remove("accent", "danger", "warn");
+                    botModeElement.classList.add(botState.mode.startsWith("LIVE") ? "danger" : "accent");
+                }
+
+                if (typeof botState.last_run === "string" && lastRunElement) {
+                    lastRunElement.textContent = botState.last_run;
+                }
+                if (lastErrorElement) {
+                    lastErrorElement.textContent = botState.last_error || "None";
+                }
+
+                if (mt5ActivePositionsElement) {
+                    const active = payload.mt5_active_positions;
+                    mt5ActivePositionsElement.textContent = (active === null || active === undefined) ? "--" : String(active);
+                }
+                if (mt5ActivePositionsCapElement) {
+                    const cap = payload.mt5_active_positions_cap;
+                    mt5ActivePositionsCapElement.textContent = (cap === null || cap === undefined) ? "--" : String(cap);
+                }
+
+                if (mt5ReadinessBody && Array.isArray(payload.mt5_symbol_readiness)) {
+                    const rows = payload.mt5_symbol_readiness.map((item) => {
+                        const ready = Boolean(item.ready);
+                        const readyClass = ready ? "accent" : "danger";
+                        const errorText = item.error || "--";
+                        const errorClass = item.error ? "danger" : "accent";
+                        const retcode = (item.retcode === null || item.retcode === undefined) ? "--" : String(item.retcode);
+                        const comment = item.comment || "--";
+                        return `
+                            <tr>
+                                <td>${item.symbol || "--"}</td>
+                                <td class="${readyClass}">${ready ? "YES" : "NO"}</td>
+                                <td>${retcode}</td>
+                                <td>${comment}</td>
+                                <td class="${errorClass}">${errorText}</td>
+                            </tr>
+                        `;
+                    });
+                    mt5ReadinessBody.innerHTML = rows.join("");
+                }
+
+                if (Array.isArray(payload.mt5_live_order_toggles)) {
+                    renderMt5LiveOrderToggles(payload.mt5_live_order_toggles);
+                }
+                if (Array.isArray(payload.mt5_atr_recovery_toggles)) {
+                    renderMt5AtrRecoveryToggles(payload.mt5_atr_recovery_toggles);
+                }
+            } catch (error) {
+                // Keep current UI state on transient status fetch errors.
+            }
+        };
+
+        setInterval(refreshStatus, 15000);
+    </script>
+</body>
+</html>

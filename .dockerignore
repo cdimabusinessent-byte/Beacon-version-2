@@ -1,0 +1,18 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.sqlite3
+.git/
+.vscode/
+tests/
+old env.txt
+create_Beacon_Desktop_Shortcut.ps1
+start_Beacon.ps1
+start_Beacon_Production.ps1
