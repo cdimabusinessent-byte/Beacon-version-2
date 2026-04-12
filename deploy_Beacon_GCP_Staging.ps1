@@ -12,6 +12,7 @@ param(
     [string]$CorsAllowedOrigins,
 
     [string]$Region = "us-central1",
+    [string]$CloudSqlRegion = "",
     [string]$Repository = "beacon",
     [string]$ServiceName = "beacon-api",
     [string]$ImageName = "beacon",
@@ -40,6 +41,9 @@ if (-not (Test-Path $ManifestTemplate)) {
 if (-not $ServiceAccountEmail) {
     $ServiceAccountEmail = "beacon-api@$ProjectId.iam.gserviceaccount.com"
 }
+if (-not $CloudSqlRegion) {
+    $CloudSqlRegion = $Region
+}
 
 $null = Get-Command gcloud -ErrorAction Stop
 
@@ -56,7 +60,7 @@ if ($CreateArtifactRegistryIfMissing.IsPresent) {
 
 Write-Host "Rendering Cloud Run manifest: $RenderedManifest"
 $Manifest = Get-Content $ManifestTemplate -Raw
-$Manifest = $Manifest.Replace("PROJECT_ID:REGION:CLOUDSQL_INSTANCE", "$ProjectId`:$Region`:$CloudSqlInstance")
+$Manifest = $Manifest.Replace("PROJECT_ID:REGION:CLOUDSQL_INSTANCE", "$ProjectId`:$CloudSqlRegion`:$CloudSqlInstance")
 $Manifest = $Manifest.Replace("beacon-api@PROJECT_ID.iam.gserviceaccount.com", $ServiceAccountEmail)
 $Manifest = $Manifest.Replace("name: beacon-database-url", "name: $DatabaseUrlSecretName")
 $Manifest = $Manifest.Replace("name: beacon-control-api-key", "name: $ControlApiKeySecretName")
