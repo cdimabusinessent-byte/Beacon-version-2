@@ -29,7 +29,7 @@ Set-Location $ProjectRoot
 
 $CloudBuildFile = Join-Path $ProjectRoot "cloudbuild.yaml"
 $ManifestTemplate = Join-Path $ProjectRoot "cloudrun.service.yaml"
-$RenderedManifest = Join-Path $ProjectRoot ".cloudrun.rendered.staging.yaml"
+$RenderedManifest = Join-Path $ProjectRoot "cloudrun.rendered.staging.yaml"
 
 if (-not (Test-Path $CloudBuildFile)) {
     throw "Cloud Build config not found at $CloudBuildFile."
@@ -69,7 +69,7 @@ try {
     Write-Host "Submitting Cloud Build for service '$ServiceName' in region '$Region'"
     gcloud builds submit `
         --config $CloudBuildFile `
-        --substitutions "_REGION=$Region,_REPOSITORY=$Repository,_SERVICE=$ServiceName,_IMAGE_NAME=$ImageName,_MANIFEST=.cloudrun.rendered.staging.yaml"
+        --substitutions "_REGION=$Region,_REPOSITORY=$Repository,_SERVICE=$ServiceName,_IMAGE_NAME=$ImageName,_MANIFEST=cloudrun.rendered.staging.yaml"
 }
 finally {
     if (Test-Path $RenderedManifest) {
