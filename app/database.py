@@ -33,7 +33,8 @@ def ensure_database_schema() -> None:
 
     config = Config(str(ALEMBIC_INI_PATH))
     config.set_main_option("script_location", str(PROJECT_ROOT / "alembic"))
-    config.set_main_option("sqlalchemy.url", database_url)
+    # Alembic's config parser treats '%' as interpolation, so escape encoded URL characters.
+    config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
     command.upgrade(config, "head")
     _migrated_urls.add(database_url)
 
