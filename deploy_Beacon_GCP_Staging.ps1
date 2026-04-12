@@ -61,8 +61,10 @@ $Manifest = $Manifest.Replace("beacon-api@PROJECT_ID.iam.gserviceaccount.com", $
 $Manifest = $Manifest.Replace("name: beacon-database-url", "name: $DatabaseUrlSecretName")
 $Manifest = $Manifest.Replace("name: beacon-control-api-key", "name: $ControlApiKeySecretName")
 $Manifest = $Manifest.Replace("name: beacon-mt5-profile-encryption-key", "name: $Mt5ProfileEncryptionKeySecretName")
-$Manifest = $Manifest.Replace("your-api-domain.run.app,your-api-domain.example.com", $TrustedHosts)
-$Manifest = $Manifest.Replace("https://your-frontend.example.com", $CorsAllowedOrigins)
+$QuotedTrustedHosts = '"' + $TrustedHosts + '"'
+$QuotedCorsAllowedOrigins = '"' + $CorsAllowedOrigins + '"'
+$Manifest = $Manifest.Replace("value: your-api-domain.run.app,your-api-domain.example.com", "value: $QuotedTrustedHosts")
+$Manifest = $Manifest.Replace("value: https://your-frontend.example.com", "value: $QuotedCorsAllowedOrigins")
 $Manifest | Set-Content -Path $RenderedManifest -Encoding UTF8
 
 try {
