@@ -272,12 +272,24 @@ def parse_symbol_list(raw_symbols: str | None) -> list[str]:
     return [item.strip() for item in raw_symbols.split(",") if item.strip()]
 
 
+def _extract_client_host(request: Request) -> str:
+    forwarded_for = (request.headers.get("x-forwarded-for") or "").strip()
+    if forwarded_for:
+        return forwarded_for.split(",", 1)[0].strip()
+
+    real_ip = (request.headers.get("x-real-ip") or "").strip()
+    if real_ip:
+        return real_ip
+
+    return request.client.host if request.client else ""
+
+
 def enforce_write_access(
     request: Request,
     x_control_key: str | None = Header(default=None, alias="X-Control-Key"),
 ) -> None:
     settings: Settings = request.app.state.settings
-    client_host = request.client.host if request.client else ""
+    client_host = _extract_client_host(request)
 
     if client_host not in settings.effective_control_allowed_ips:
         raise HTTPException(status_code=403, detail="Write access denied for this client IP.")
@@ -294,7 +306,7 @@ def enforce_operator_access(
 
 
 def _build_auth_rate_limit_key(request: Request, action: str, identifier: str | None = None) -> str:
-    client_host = request.client.host if request.client else "unknown"
+    client_host = _extract_client_host(request) or "unknown"
     normalized_identifier = (identifier or "").strip().lower() or "anonymous"
     return f"{action}:{client_host}:{normalized_identifier}"
 
