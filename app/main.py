@@ -291,7 +291,8 @@ def enforce_write_access(
     settings: Settings = request.app.state.settings
     client_host = _extract_client_host(request)
 
-    if client_host not in settings.effective_control_allowed_ips:
+    allowed = settings.effective_control_allowed_ips
+    if "*" not in allowed and client_host not in allowed:
         raise HTTPException(status_code=403, detail="Write access denied for this client IP.")
 
     if settings.control_api_key_is_configured and x_control_key != settings.control_api_key:

@@ -1,0 +1,2 @@
+﻿--region: us-central1
+--update-env-vars: CONTROL_ALLOWED_IPS=127.0.0.1,105.116.0.93
